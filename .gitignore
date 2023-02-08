@@ -1,0 +1,9 @@
+certs/
+.$*
+.vscode
+
+benchmarks/
+benchmarks_logs/
+
+*.tar
+*.zip

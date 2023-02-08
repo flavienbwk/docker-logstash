@@ -1,0 +1,24 @@
+instances:
+    - name: esA1
+      dns:
+        - esA1 
+        - localhost
+      ip:
+        - 127.0.0.1
+        - 172.17.0.1
+
+    - name: esB1
+      dns:
+        - esB1
+        - localhost
+      ip:
+        - 127.0.0.1
+        - 172.17.0.1
+
+    - name: kibana
+      dns:
+        - kibana
+        - localhost
+      ip:
+        - 127.0.0.1
+        - 172.17.0.1

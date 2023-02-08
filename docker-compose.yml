@@ -1,0 +1,9 @@
+version: '3.2'
+
+services:
+
+  logstash:
+    build: .
+    volumes:
+      - ./pipelines:/usr/share/logstash/pipeline
+      - ./conf:/usr/share/logstash/config

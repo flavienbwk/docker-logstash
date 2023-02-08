@@ -1,0 +1,57 @@
+version: '3.2'
+
+services:
+
+  esA1:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.17.8
+    volumes:
+      - "esA1:/usr/share/elasticsearch/data"
+      - "./certs:/usr/share/elasticsearch/config/certificates:ro"
+    ports:
+      - "9200:9200"
+    environment:
+      ES_JAVA_OPTS: "-Xmx512m -Xms512m"
+      ELASTIC_PASSWORD: changeme
+      node.name: esA1
+      cluster.name: mycluster-src
+      discovery.seed_hosts: esA1
+      cluster.initial_master_nodes: esA1
+      network.host: 0.0.0.0
+      xpack.license.self_generated.type: basic
+      xpack.monitoring.collection.enabled: "true"
+      xpack.security.enabled: "true"
+      xpack.security.http.ssl.enabled: "true"
+      xpack.security.http.ssl.key: /usr/share/elasticsearch/config/certificates/esA1/esA1.key
+      xpack.security.http.ssl.certificate_authorities: /usr/share/elasticsearch/config/certificates/ca/ca.crt
+      xpack.security.http.ssl.certificate: /usr/share/elasticsearch/config/certificates/esA1/esA1.crt
+      xpack.security.transport.ssl.enabled: "true"
+      xpack.security.transport.ssl.verification_mode: certificate 
+      xpack.security.transport.ssl.certificate_authorities: /usr/share/elasticsearch/config/certificates/ca/ca.crt
+      xpack.security.transport.ssl.certificate: /usr/share/elasticsearch/config/certificates/esA1/esA1.crt
+      xpack.security.transport.ssl.key: /usr/share/elasticsearch/config/certificates/esA1/esA1.key
+      cluster.routing.allocation.disk.threshold_enabled: "true"
+      cluster.routing.allocation.disk.watermark.low: 93%
+      cluster.routing.allocation.disk.watermark.high: 95%
+    networks:
+      - docker_logstash_network
+
+  kibana_a:
+    image: docker.elastic.co/kibana/kibana:7.17.8
+    volumes:
+      - type: bind
+        source: ./kibana_a.yml
+        target: /usr/share/kibana/config/kibana.yml
+        read_only: true
+      - "./certs:/usr/share/elasticsearch/config/certificates:ro"
+    ports:
+      - "5601:5601"
+    networks:
+      - docker_logstash_network
+
+volumes:
+  esA1:
+    driver: local
+
+networks:
+  docker_logstash_network:
+    external: true
