@@ -1,6 +1,6 @@
 # Docker Logstash
 
-Simple repo to use and experiment with Logstash, useful for cluster migrations.
+A repo to use and experiment with Logstash, useful for cluster migrations.
 
 ![Migration strategy](./images/strategy.jpg)
 
@@ -89,6 +89,16 @@ We will setup two servers to migrate data from Server A to Server B.
     docker-compose build
     docker-compose run logstash --path.config=/usr/share/logstash/pipeline
     ```
+
+## Benchmark
+
+I've tested the migration on a six-core/twelve-thread Intel 2.2Ghz CPU and SSD machine. There was `539 800` documents totalizing `360.9 MB` at `5000` documents per batch :
+
+```sh
+time docker-compose run logstash --path.config=/usr/share/logstash/pipeline
+```
+
+Result : `real    1m18,083s`
 
 ## Clean this project
 
