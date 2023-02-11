@@ -111,3 +111,48 @@ docker-compose -f serverB.docker-compose.yml down
 docker volume rm docker-logstash_esB1
 docker network rm docker_logstash_network
 ```
+
+## Elasticsearch-dump alternative
+
+If getting troubles with Logstash or wanting a simpler way to perform data migration, you might want to use [elasticsearch-dump](https://github.com/elasticsearch-dump/elasticsearch-dump).
+
+For a single index :
+
+```bash
+export INDEX=metricbeat
+docker run --rm -e NODE_TLS_REJECT_UNAUTHORIZED=0 \
+    -ti elasticdump/elasticsearch-dump:v6.94.1 \
+    --input=https://elastic:changeme@172.17.0.1:9200/$INDEX \
+    --output=https://elastic:changeme@172.17.0.1:9201/$INDEX \
+    --limit=10000 \
+    --type=mapping
+docker run --rm -e NODE_TLS_REJECT_UNAUTHORIZED=0 \
+    -ti elasticdump/elasticsearch-dump:v6.94.1 \
+    --input=https://elastic:changeme@172.17.0.1:9200/$INDEX \
+    --output=https://elastic:changeme@172.17.0.1:9201/$INDEX \
+    --limit=10000 \
+    --type=data
+```
+
+For a multiple indices (by regex pattern) :
+
+```bash
+docker run --rm -e NODE_TLS_REJECT_UNAUTHORIZED=0 \
+    -v "$(pwd)/data:/data" \
+    -ti elasticdump/elasticsearch-dump:v6.94.1 \
+    multielasticdump \
+    --direction=dump \
+    --match='^[^.].*$'\
+    --input=https://elastic:changeme@172.17.0.1:9200 \
+    --output=/data \
+    --limit=10000
+docker run --rm -e NODE_TLS_REJECT_UNAUTHORIZED=0 \
+    -v "$(pwd)/data:/data" \
+    -ti elasticdump/elasticsearch-dump:v6.94.1 \
+    multielasticdump \
+    --direction=load \
+    --match='^[^.].*$'\
+    --input=/data \
+    --output=https://elastic:changeme@172.17.0.1:9201 \
+    --limit=10000
+```
