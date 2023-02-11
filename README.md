@@ -134,7 +134,7 @@ docker run --rm -e NODE_TLS_REJECT_UNAUTHORIZED=0 \
     --type=data
 ```
 
-For a multiple indices (by regex pattern) :
+For multiple indices (by regex pattern) :
 
 ```bash
 docker run --rm -e NODE_TLS_REJECT_UNAUTHORIZED=0 \
@@ -155,4 +155,6 @@ docker run --rm -e NODE_TLS_REJECT_UNAUTHORIZED=0 \
     --input=/data \
     --output=https://elastic:changeme@172.17.0.1:9201 \
     --limit=10000
+# Time to dump 4.3m documents : ~10 minutes
+# Time to load 4.3m documents : ~22 minutes
 ```
